@@ -4,8 +4,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-
-func pingPong(s *discordgo.Session, m *discordgo.MessageCreate) {
+func PingPong(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Content == "ping" {
 		s.ChannelMessageSend(m.ChannelID, "Pong!")
 	}

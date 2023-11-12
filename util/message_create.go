@@ -13,5 +13,5 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	// If the message is "ping" reply with "Pong!"
-	pingPong(s, m);
+	PingPong(s, m)
 }
