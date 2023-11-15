@@ -48,6 +48,7 @@ func main() {
 	}
 
 	cfg := Config{}
+
 	err = env.Parse(&cfg)
 	if err != nil {
 		log.Fatalf("unable to parse ennvironment variables: %e", err)
