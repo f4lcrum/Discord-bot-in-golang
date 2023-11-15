@@ -13,7 +13,7 @@ import (
 
 // Bot parameters
 var (
-	GuildID  = flag.String("guild", "", "Test guild ID. If not passed - bot registers commands globally")
+	guild    = flag.String("guild", "", "Test guild ID. If not passed - bot registers commands globally")
 	BotToken = flag.String("token", "", "Bot access token")
 )
 
@@ -534,7 +534,7 @@ func RemoveCommands(s *discordgo.Session, registeredCommands []*discordgo.Applic
 	// }
 
 	for _, v := range registeredCommands {
-		err := s.ApplicationCommandDelete(s.State.User.ID, *GuildID, v.ID)
+		err := s.ApplicationCommandDelete(s.State.User.ID, *guild, v.ID)
 		if err != nil {
 			log.Panicf("Cannot delete '%v' command: %v", v.Name, err)
 		}
@@ -557,7 +557,7 @@ func AddCommands(s *discordgo.Session) []*discordgo.ApplicationCommand {
 	log.Println("Adding commands...")
 	registeredCommands := make([]*discordgo.ApplicationCommand, len(commands))
 	for i, v := range commands {
-		cmd, err := s.ApplicationCommandCreate(s.State.User.ID, *GuildID, v)
+		cmd, err := s.ApplicationCommandCreate(s.State.User.ID, *guild, v)
 		if err != nil {
 			log.Panicf("Cannot create '%v' command: %v", v.Name, err)
 		}
