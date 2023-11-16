@@ -61,7 +61,8 @@ func main() {
 	}
 
 	dg.AddHandler(util.MessageCreate)
-
+	dg.AddHandler(util.SaveByReaction)
+	dg.AddHandlerOnce(util.SaveByReaction)
 	enabled := true
 
 	keywords, err := readLines(cfg.SwearWordsPath)
@@ -72,6 +73,7 @@ func main() {
 	}
 
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
+	dg.Identify.Intents |= discordgo.IntentGuildMessageReactions
 	rule, err := dg.AutoModerationRuleCreate(cfg.Guild, &discordgo.AutoModerationRule{
 		Name:        "Auto Moderation",
 		EventType:   discordgo.AutoModerationEventMessageSend,

@@ -5,6 +5,7 @@ import (
 )
 
 func PingPong(s *discordgo.Session, m *discordgo.MessageCreate) {
+
 	if m.Content == "ping" {
 		s.ChannelMessageSend(m.ChannelID, "Pong!")
 	}
