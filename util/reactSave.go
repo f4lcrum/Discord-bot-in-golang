@@ -23,7 +23,6 @@ func SaveByReaction(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
 			return
 		}
 		msg, _ := s.ChannelMessage(r.ChannelID, r.MessageID)
-
 		message := fmt.Sprintf("------------------------------\nAuthor of message: %s \nContent of message: %s \n", msg.Author.Username, msg.Content)
 
 		for i := 0; i < len(msg.Attachments); i++ {

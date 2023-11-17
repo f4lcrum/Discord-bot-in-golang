@@ -100,7 +100,7 @@ func main() {
 		return
 	}
 
-	commands := util.AddCommands(dg)
+	commands := AddCommands(dg)
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
 
@@ -109,7 +109,7 @@ func main() {
 	<-sc
 
 	// Cleanly close down the Discord session.
-	util.RemoveCommands(dg, commands)
+	RemoveCommands(dg, commands)
 	util.RemoveRule(dg, rule.ID, cfg.Guild)
 	err = dg.Close()
 	if err != nil {
