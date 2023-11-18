@@ -1,6 +1,7 @@
 package main
 
 import (
+	"discord_bot/ISSNow"
 	"discord_bot/gowiki"
 	"flag"
 	"fmt"
@@ -16,11 +17,18 @@ var (
 var (
 	commands = []*discordgo.ApplicationCommand{
 		{
-			Name: "basic-command",
-			// All commands and options must have a description
-			// Commands/options without description will fail the registration
-			// of the command.
+			Name:        "basic-command",
 			Description: "Basic command",
+		},
+		{
+			Name:        "iss-now",
+			Description: "ISS current location. (International Space Station",
+			NameLocalizations: &map[discordgo.Locale]string{
+				discordgo.Czech: "iss-lokator",
+			},
+			DescriptionLocalizations: &map[discordgo.Locale]string{
+				discordgo.Czech: "Poloha ISS. Medzinarodna vesmirna stanica.",
+			},
 		},
 		{
 			Name:        "wiki-search",
@@ -81,7 +89,27 @@ var (
 				},
 			})
 		},
+		"iss-now": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			data := ISSNow.GetLocation(cfg.ApiKey)
 
+			response := fmt.Sprintf("latitude: %s\n longitude: %s\n ", data.Latitude, data.Longitude)
+			fmt.Println(data.Location)
+			if len(data.Location) == 0 {
+				response += fmt.Sprintf("ISS is above ocean or something, not being able to retrieve location name")
+			} else {
+				response += fmt.Sprintf("%s \n", data.Location)
+			}
+
+			err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: response,
+				},
+			})
+			if err != nil {
+				panic(err)
+			}
+		},
 		"wiki-search": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			responses := map[discordgo.Locale]string{
 				discordgo.Czech: "Ahoj! Toto je lokalizovaná zpráva",
@@ -96,10 +124,9 @@ var (
 				response += option.StringValue()
 				page, err := gowiki.GetPage(option.StringValue(), -1, false, true)
 				if err != nil {
-					fmt.Println(err)
+					log.Fatal(err)
 				}
 
-				fmt.Println(page.URL)
 				response += page.URL
 			}
 

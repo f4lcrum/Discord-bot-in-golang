@@ -18,7 +18,12 @@ type Config struct {
 	Guild          string `env:"GUILD,required"`
 	ChannelLog     string `env:"CHANNEL_LOG,required"`
 	SwearWordsPath string `env:"SWEAR_WORDS_PATH,required"`
+	ApiKey         string `env:"API_KEY,required"`
 }
+
+var (
+	cfg = Config{}
+)
 
 func readLines(path string) ([]string, error) {
 	file, err := os.Open(path)
@@ -46,8 +51,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
-
-	cfg := Config{}
 
 	err = env.Parse(&cfg)
 	if err != nil {
