@@ -1,8 +1,9 @@
 package main
 
 import (
-	"bufio"
-	"discord_bot/util"
+	"discord_bot/commands"
+	"discord_bot/moderation"
+	"discord_bot/reactions"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/caarlos0/env/v6"
@@ -25,26 +26,6 @@ var (
 	cfg = Config{}
 )
 
-func readLines(path string) ([]string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			log.Fatalf("Error closing swear words file")
-		}
-	}(file)
-
-	var lines []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines, scanner.Err()
-}
-
 func main() {
 	err := godotenv.Load(".env")
 
@@ -63,39 +44,14 @@ func main() {
 		return
 	}
 
-	dg.AddHandler(util.MessageCreate)
-	dg.AddHandler(util.SaveByReaction)
-	dg.AddHandlerOnce(util.SaveByReaction)
-	enabled := true
-
-	keywords, err := readLines(cfg.SwearWordsPath)
-
-	if err != nil {
-		fmt.Println("error loading swear words,", err)
-		return
-	}
+	dg.AddHandler(reactions.SaveByReaction)
+	dg.AddHandlerOnce(reactions.SaveByReaction)
 
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
 	dg.Identify.Intents |= discordgo.IntentGuildMessageReactions
-	rule, err := dg.AutoModerationRuleCreate(cfg.Guild, &discordgo.AutoModerationRule{
-		Name:        "Auto Moderation",
-		EventType:   discordgo.AutoModerationEventMessageSend,
-		TriggerType: discordgo.AutoModerationEventTriggerKeyword,
-		TriggerMetadata: &discordgo.AutoModerationTriggerMetadata{
-			KeywordFilter: keywords,
-		},
 
-		Enabled: &enabled,
-		Actions: []discordgo.AutoModerationAction{
-			{Type: discordgo.AutoModerationRuleActionBlockMessage},
-			{Type: discordgo.AutoModerationRuleActionTimeout, Metadata: &discordgo.AutoModerationActionMetadata{Duration: 30}},
-			{Type: discordgo.AutoModerationRuleActionSendAlertMessage, Metadata: &discordgo.AutoModerationActionMetadata{
-				ChannelID: cfg.ChannelLog,
-			}},
-		},
-	})
-
-	util.AddRule(dg, rule, cfg.Guild)
+	rule := moderation.GetRule(cfg.SwearWordsPath, cfg.ChannelLog)
+	moderation.AddRule(dg, rule, cfg.Guild)
 
 	err = dg.Open()
 	if err != nil {
@@ -103,7 +59,7 @@ func main() {
 		return
 	}
 
-	commands := AddCommands(dg)
+	cmds := commands.AddCommands(dg)
 
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
 
@@ -111,9 +67,8 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
-	// Cleanly close down the Discord session.
-	RemoveCommands(dg, commands)
-	util.RemoveRule(dg, rule.ID, cfg.Guild)
+	commands.RemoveCommands(dg, cmds)
+	moderation.RemoveRule(dg, rule.ID, cfg.Guild)
 	err = dg.Close()
 	if err != nil {
 		return

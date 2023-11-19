@@ -1,4 +1,4 @@
-package util
+package moderation
 
 import (
 	"fmt"
@@ -42,8 +42,10 @@ func RemoveRule(session *discordgo.Session, ruleId string, guildId string) {
 	log.Println("Rules removed")
 }
 
-func AddRule(session *discordgo.Session, rule *discordgo.AutoModerationRule, guildId string) {
+func AddRule(session *discordgo.Session, rule discordgo.AutoModerationRule, guildId string) {
 	log.Println("Adding auto moderation rules...")
+	_, _ = session.AutoModerationRuleCreate(guildId, &rule)
+
 	session.Identify.Intents |= discordgo.IntentAutoModerationExecution
 	session.Identify.Intents |= discordgo.IntentMessageContent
 	session.AddHandler(AutoModFuncExecution)

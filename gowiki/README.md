@@ -62,22 +62,22 @@ import (
 
 func main() {
     // Search for the Wikipedia page title
-    search_result, _, err := gowiki.Search("Why is the sky blue", 3, false)
-    if err != nil {
-        fmt.Println(err)
+    search_result, _, _ := gowiki.Search("Why is the sky blue", 3, false)
+    if _ != nil {
+        fmt.Println(_)
     }
     fmt.Printf("This is your search result: %v\n", search_result)
 
     // Get the page
-    page, err := gowiki.GetPage("Rafael Nadal", -1, false, true)
-    if err != nil {
-        fmt.Println(err)
+    page, _ := gowiki.GetPage("Rafael Nadal", -1, false, true)
+    if _ != nil {
+        fmt.Println(_)
     }
 
     // Get the content of the page
-    content, err := page.GetContent()
-    if err != nil {
-        fmt.Println(err)
+    content, _ := page.GetContent()
+    if _ != nil {
+        fmt.Println(_)
     }
     fmt.Printf("This is the page content: %v\n", content)
 }
@@ -94,9 +94,9 @@ Note: The functions below are functions that you would usually use. Read the [do
 
 ### 1. Search
 ```go
-search_result, suggestion, err := gowiki.Search("Why is the sky blue", 3, true)
-if err != nil {
-    fmt.Println(err)
+search_result, suggestion, _ := gowiki.Search("Why is the sky blue", 3, true)
+if _ != nil {
+    fmt.Println(_)
 }
 fmt.Printf("Search result: %v\n", search_result)
 fmt.Printf("Suggestion: %v\n", suggestion)
@@ -104,45 +104,45 @@ fmt.Printf("Suggestion: %v\n", suggestion)
 
 ### 2. GetPage (There are multiple page methods in the [Wikipedia Page Methods](#wikipedia-page-methods))
 ```go
-page, err := gowiki.GetPage("Rafael Nadal", -1, false, true)
-if err != nil {
-    fmt.Println(err)
+page, _ := gowiki.GetPage("Rafael Nadal", -1, false, true)
+if _ != nil {
+    fmt.Println(_)
 }
 // Then now you can use the page methods
 ```
 
 ### 3. Suggest
 ```go
-suggestion, err := gowiki.Suggest("nadal")
-if err != nil {
-    fmt.Println(err)
+suggestion, _ := gowiki.Suggest("nadal")
+if _ != nil {
+    fmt.Println(_)
 }
 fmt.Printf("Suggestion: %v\n", suggestion)
 ```
 
 ### 4. Geosearch
 ```go
-res, err := gowiki.GeoSearch(40.67693, 117.23193, -1, "", -1)
-if err != nil {
-    fmt.Println(err)
+res, _ := gowiki.GeoSearch(40.67693, 117.23193, -1, "", -1)
+if _ != nil {
+    fmt.Println(_)
 }
 fmt.Printf("Geosearch result: %v\n", res)
 ```
 
 ### 5. GetRandom
 ```go
-res, err := gowiki.GetRandom(5)
-if err != nil {
-    fmt.Println(err)
+res, _ := gowiki.GetRandom(5)
+if _ != nil {
+    fmt.Println(_)
 }
 fmt.Printf("Random titles: %v\n", res)
 ```
 
 ### 6. Summary
 ```go
-res, err := gowiki.Summary("Rafael Nadal", 5, -1, false, true)
-if err != nil {
-    fmt.Println(err)
+res, _ := gowiki.Summary("Rafael Nadal", 5, -1, false, true)
+if _ != nil {
+    fmt.Println(_)
 }
 fmt.Printf("Summary: %v\n", res)
 ```
