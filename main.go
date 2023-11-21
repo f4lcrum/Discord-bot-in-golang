@@ -1,6 +1,7 @@
 package main
 
 import (
+	"discord_bot/branik"
 	"discord_bot/commands"
 	"discord_bot/moderation"
 	"discord_bot/reactions"
@@ -45,7 +46,7 @@ func main() {
 	}
 
 	dg.AddHandler(reactions.SaveByReaction)
-	dg.AddHandlerOnce(reactions.SaveByReaction)
+	dg.AddHandler(branik.Branig)
 
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
 	dg.Identify.Intents |= discordgo.IntentGuildMessageReactions
